@@ -19,17 +19,23 @@ def parse_table_data(soup, label_pattern):
 
     return str(re.sub(r'<(/)?td>', '', str(next_element))).strip()
 
-station_id = sys.argv[1]
-req = requests.get('http://www.ndbc.noaa.gov/station_page.php?station={}'.format(station_id))
+def retrieve_station_data(station_id):
+    req = requests.get('http://www.ndbc.noaa.gov/station_page.php?station={}'.format(station_id))
 
-if req.status_code != 200:
-    print('Error fetching page! {}'.format(req.status_code))
-    sys.exit(1)
+    if req.status_code != 200:
+        print('Error fetching page! {}'.format(req.status_code))
+        sys.exit(1)
 
-soup = BeautifulSoup(req.text, 'lxml')
+    soup = BeautifulSoup(req.text, 'lxml')
 
-data_to_parse = [r'Swell Height', r'Swell Period', r'Swell Direction']
-for label in data_to_parse:
-    print(label, end=' :: ')
-    print(parse_table_data(soup, label))
+    data_to_parse = [r'Swell Height', r'Swell Period', r'Swell Direction']
+    for label in data_to_parse:
+        print(label, end=' :: ')
+        print(parse_table_data(soup, label))
+        
+def main(station_id):
+    retrieve_station_data(station_id)
+
+if __name__ == '__main__':
+    main(sys.argv[1])
 
