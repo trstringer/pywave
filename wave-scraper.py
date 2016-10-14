@@ -6,11 +6,15 @@ from bs4 import BeautifulSoup
 import requests
 
 class SwellData():
-    def __init__(self, station_id):
+    def __init__(self, station_id, swell_height, swell_period, swell_direction):
         self.station_id = station_id
+        self.swell_height = swell_height
+        self.swell_period = swell_period
+        self.swell_direction = swell_direction
 
-    def retrieve_station_data(self):
-        req = requests.get('http://www.ndbc.noaa.gov/station_page.php?station={}'.format(self.station_id))
+    @staticmethod
+    def retrieve_station_data(station_id):
+        req = requests.get('http://www.ndbc.noaa.gov/station_page.php?station={}'.format(station_id))
 
         if req.status_code != 200:
             print('Error fetching page! {}'.format(req.status_code))
@@ -18,12 +22,15 @@ class SwellData():
 
         soup = BeautifulSoup(req.text, 'lxml')
 
-        data_to_parse = [r'Swell Height', r'Swell Period', r'Swell Direction']
-        for label in data_to_parse:
-            print(label, end=' :: ')
-            print(parse_table_data(soup, label))
-
-    def parse_table_data(self, soup, label_pattern):
+        swell_data = SwellData(
+            station_id,
+            SwellData.parse_table_data(soup, r'Swell Height'),
+            SwellData.parse_table_data(soup, r'Swell Period'),
+            SwellData.parse_table_data(soup, r'Swell Direction'))
+        return swell_data
+        
+    @staticmethod
+    def parse_table_data(soup, label_pattern):
         pattern = re.compile(label_pattern)
         element = soup.find(text=pattern)
 
@@ -37,10 +44,16 @@ class SwellData():
 
         return str(re.sub(r'<(/)?td>', '', str(next_element))).strip()
 
-        
 def main(station_id):
-    retrieve_station_data(station_id)
+    swell_data = SwellData.retrieve_station_data(station_id)
+    print('Swell Height :: {}'.format(swell_data.swell_height))
+    print('Swell Period :: {}'.format(swell_data.swell_period))
+    print('Swell Direction :: {}'.format(swell_data.swell_direction))
 
 if __name__ == '__main__':
-    main(sys.argv[1])
+    if len(sys.argv) < 2:
+        print('You must specify the station ID as the first parameter')
+        sys.exit(1)
+    else:
+        main(sys.argv[1])
 
