@@ -16,6 +16,6 @@ Currently this module just scrapes buoy data. The future desire is to have IoT
 integration.
 
  - :full_moon: Scrape buoy data
- - :empty_moon: Integrate with Raspberry Pi (LED indicators or screen display)
- - :empty_moon: Tweet station data
+ - :new_moon: Integrate with Raspberry Pi (LED indicators or screen display)
+ - :new_moon: Tweet station data
 
