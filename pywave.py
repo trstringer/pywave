@@ -24,13 +24,13 @@ class SwellData():
 
         swell_data = SwellData(
             station_id,
-            SwellData.parse_table_data(soup, r'Swell Height'),
-            SwellData.parse_table_data(soup, r'Swell Period'),
-            SwellData.parse_table_data(soup, r'Swell Direction'))
+            SwellData.parse_table_data(soup, r'Swell Height', True),
+            SwellData.parse_table_data(soup, r'Swell Period', True),
+            SwellData.parse_table_data(soup, r'Swell Direction', False))
         return swell_data
         
     @staticmethod
-    def parse_table_data(soup, label_pattern):
+    def parse_table_data(soup, label_pattern, is_num):
         pattern = re.compile(label_pattern)
         element = soup.find(text=pattern)
 
@@ -42,7 +42,12 @@ class SwellData():
         if next_element is None:
             return None
 
-        return str(re.sub(r'<(/)?td>', '', str(next_element))).strip()
+        element_data = str(re.sub(r'<(/)?td>', '', str(next_element))).strip()
+
+        if is_num:
+            return re.findall(r'\d+\.\d+', element_data)[0]
+        else:
+            return element_data
 
 def main(station_id):
     swell_data = SwellData.retrieve_station_data(station_id)
