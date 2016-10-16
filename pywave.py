@@ -51,8 +51,8 @@ class SwellData():
 
 def main(station_id):
     swell_data = SwellData.retrieve_station_data(station_id)
-    print('Swell Height :: {}'.format(swell_data.swell_height))
-    print('Swell Period :: {}'.format(swell_data.swell_period))
+    print('Swell Height :: {} ft'.format(swell_data.swell_height))
+    print('Swell Period :: {} ft'.format(swell_data.swell_period))
     print('Swell Direction :: {}'.format(swell_data.swell_direction))
 
 if __name__ == '__main__':
