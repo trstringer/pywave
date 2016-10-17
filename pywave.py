@@ -13,7 +13,7 @@ class SwellData():
         self.swell_direction = swell_direction
 
     def __str__(self):
-        return 'Height - {} ft\nPeriod - {} s\nDirection - {}'.format(
+        return '{} ft @ {} s ({})'.format(
             self.swell_height, 
             self.swell_period, 
             self.swell_direction)
