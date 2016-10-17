@@ -12,6 +12,12 @@ class SwellData():
         self.swell_period = swell_period
         self.swell_direction = swell_direction
 
+    def __str__(self):
+        return 'Height - {} ft\nPeriod - {} s\nDirection - {}'.format(
+            self.swell_height, 
+            self.swell_period, 
+            self.swell_direction)
+
     @staticmethod
     def retrieve_station_data(station_id):
         req = requests.get('http://www.ndbc.noaa.gov/station_page.php?station={}'.format(station_id))
@@ -51,9 +57,7 @@ class SwellData():
 
 def main(station_id):
     swell_data = SwellData.retrieve_station_data(station_id)
-    print('Swell Height :: {} ft'.format(swell_data.swell_height))
-    print('Swell Period :: {} ft'.format(swell_data.swell_period))
-    print('Swell Direction :: {}'.format(swell_data.swell_direction))
+    print(str(swell_data))
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
