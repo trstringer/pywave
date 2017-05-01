@@ -1,0 +1,4 @@
+#!/bin/bash
+
+. TEMPDIR/venv/bin/activate
+python TEMPDIR/pywave.py "$@"

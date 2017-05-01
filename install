@@ -1,0 +1,12 @@
+#!/bin/bash
+
+SCRIPT_DIR=$(realpath $(dirname "$0"))
+
+sed 's|TEMPDIR|'$SCRIPT_DIR'|g' $SCRIPT_DIR/bin > ~/.local/bin/pywave
+chmod 755 ~/.local/bin/pywave
+
+cd $SCRIPT_DIR
+python3 -m venv venv
+. venv/bin/activate
+pip install -r requirements.txt
+deactivate

@@ -1,66 +1,52 @@
+import argparse
 import re
 import sys
 from bs4 import BeautifulSoup
 import requests
 
-class SwellData():
-    def __init__(self, station_id, swell_height, swell_period, swell_direction):
-        self.station_id = station_id
-        self.swell_height = swell_height
-        self.swell_period = swell_period
-        self.swell_direction = swell_direction
+def create_station_url(station_id):
+    """Create the url for the station buoy data"""
 
-    def __str__(self):
-        return '{} ft @ {} s ({})'.format(
-            self.swell_height, 
-            self.swell_period, 
-            self.swell_direction)
+    return 'http://www.ndbc.noaa.gov/station_page.php?station={}'.format(station_id)
 
-    @staticmethod
-    def retrieve_station_data(station_id):
-        req = requests.get('http://www.ndbc.noaa.gov/station_page.php?station={}'.format(station_id))
+def parse_metric(soup, search_regex, verbose=False):
+    """Parse the wave height from the web page"""
 
-        if req.status_code != 200:
-            print('Error fetching page! {}'.format(req.status_code))
-            sys.exit(1)
+    # import pdb; pdb.set_trace()
+    search_labels = [
+        _ for _ in soup.find_all('td')
+        if re.search(r'<td>{}</td>'.format(search_regex), str(_))
+        and len(str(_).split('\n')) == 1
+    ]
 
+    if len(search_labels) != 1:
+        if verbose:
+            print(
+                'Unexpected length of matched "{}" : {}'
+                .format(search_regex, len(search_labels))
+            )
+        return None
+
+    return search_labels[0].find_next_sibling('td').text.strip()
+
+def main():
+    """Main code execution"""
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-s', '--station', help='station id')
+    parser.add_argument('-v', '--verbose', help='show verbose output', action='store_true')
+    args = parser.parse_args()
+
+    if args.station:
+        station_url = create_station_url(args.station)
+        req = requests.get(station_url)
         soup = BeautifulSoup(req.text, 'lxml')
-
-        swell_data = SwellData(
-            station_id,
-            SwellData.parse_table_data(soup, r'Wave Height', True),
-            SwellData.parse_table_data(soup, r'Swell Period', True),
-            SwellData.parse_table_data(soup, r'Swell Direction', False))
-        return swell_data
-        
-    @staticmethod
-    def parse_table_data(soup, label_pattern, is_num):
-        pattern = re.compile(label_pattern)
-        element = soup.find(text=pattern)
-
-        if element is None:
-            return None
-
-        next_element = element.next
-
-        if next_element is None:
-            return None
-
-        element_data = str(re.sub(r'<(/)?td>', '', str(next_element))).strip()
-
-        if is_num:
-            return re.findall(r'\d+\.\d+', element_data)[0]
-        else:
-            return element_data
-
-def main(station_id):
-    swell_data = SwellData.retrieve_station_data(station_id)
-    print(str(swell_data))
+        print(
+            '{} @ {} [{}]'.format(
+                parse_metric(soup, r'Wave Height \(WVHT\):', verbose=True),
+                parse_metric(soup, r'Dominant Wave Period \(DPD\):', verbose=True),
+                parse_metric(soup, r'Mean Wave Direction \(MWD\):', verbose=True)
+            ))
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print('You must specify the station ID as the first parameter')
-        sys.exit(1)
-    else:
-        main(sys.argv[1])
-
+    main()
