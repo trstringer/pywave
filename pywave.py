@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import re
 import sys
 from bs4 import BeautifulSoup
@@ -30,7 +28,7 @@ class SwellData():
 
         swell_data = SwellData(
             station_id,
-            SwellData.parse_table_data(soup, r'Swell Height', True),
+            SwellData.parse_table_data(soup, r'Wave Height', True),
             SwellData.parse_table_data(soup, r'Swell Period', True),
             SwellData.parse_table_data(soup, r'Swell Direction', False))
         return swell_data
