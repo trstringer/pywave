@@ -2,20 +2,19 @@
 
 *NDBC Buoy Data Scraper*
 
+## Installation and Configuration
+
+1. Clone the repository: `$ git clone https://github.com/tstringer/pywave.git`
+1. Navigate to the new dir: `$ cd pywave`
+1. Modify permission on the install file: `$ chmod 755 ./install`
+1. Kick off the installation: `$ ./install`
+
+> :bulb: Note, this requires that `~/.local/bin` is an existing directory, and also requires python3
+
 ## Usage
 
 ```
-$ ./pywave.py <station_id>
+$ pywave -s <BUOY_STATION_ID>
 ```
 
 *Note: Get station IDs from http://www.ndbc.noaa.gov/*
-
-## Roadmap
-
-Currently this module just scrapes buoy data. The future desire is to have IoT
-integration.
-
- - :full_moon: Scrape buoy data
- - :new_moon: Integrate with Raspberry Pi (LED indicators or screen display)
- - :new_moon: Tweet station data
-
