@@ -11,7 +11,7 @@ if [[ ! -f "$CACHE_FILE" || ! -f "$CACHE_OUTPUT" ]]; then
 else
     CURRENT_DATE="$(date +%s)"
     PREVIOUS_DATE="$(cat $CACHE_FILE)"
-    PREVIOUS_ADJUSTED=$(( $PREVIOUS_DATE + 300 ))
+    PREVIOUS_ADJUSTED=$(( $PREVIOUS_DATE + 1800 ))
     DATE_DIFF=$(( $CURRENT_DATE - $PREVIOUS_ADJUSTED ))
     if [[ $DATE_DIFF -gt 0 ]]; then
         date +%s > "$CACHE_FILE"
