@@ -14,7 +14,7 @@
 ## Usage
 
 ```
-$ pywave -s <BUOY_STATION_ID>
+$ pywave -s <WAVE_BUOY_STATION_ID> -w <WIND_BUOY_STATION_ID> -p
 ```
 
 *Note: Get station IDs from http://www.ndbc.noaa.gov/*
