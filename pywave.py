@@ -169,7 +169,7 @@ def direction_indicator(direction):
     if direction == "N":
         return "⬇️ ⬇️"
     elif direction == "NNE":
-        return "⬇️ ↘️"
+        return "⬇️ ↙️"
     elif direction == "NE":
         return "↙️ ↙️"
     elif direction == "ENE":
